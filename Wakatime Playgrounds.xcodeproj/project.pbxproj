@@ -6,14 +6,52 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F1E4F4C02E50F29F00C2D684 /* dylib-Info-template.plist in Resources */ = {isa = PBXBuildFile; fileRef = F1E4F4BF2E50F29F00C2D684 /* dylib-Info-template.plist */; };
+		F1E4F4C72E50F2FA00C2D684 /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = F1E4F4C62E50F2FA00C2D684 /* PythonKit */; };
+		F1E4F4C82E50F30400C2D684 /* Python.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1E4F4BD2E50F28B00C2D684 /* Python.xcframework */; };
+		F1E4F4C92E50F30400C2D684 /* Python.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F1E4F4BD2E50F28B00C2D684 /* Python.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F1E4F4D92E516C6E00C2D684 /* GoogleSansCode-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1E4F4D82E516C6600C2D684 /* GoogleSansCode-VariableFont_wght.ttf */; };
+		F1E4F4DA2E516C6E00C2D684 /* GoogleSansCode-Italic-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1E4F4D72E516C6600C2D684 /* GoogleSansCode-Italic-VariableFont_wght.ttf */; };
+		F1E4F4DC2E516C7900C2D684 /* Outfit-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1E4F4DB2E516C7900C2D684 /* Outfit-VariableFont_wght.ttf */; };
+		F1E4F4DF2E516C8300C2D684 /* Raleway-Italic-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1E4F4DD2E516C8300C2D684 /* Raleway-Italic-VariableFont_wght.ttf */; };
+		F1E4F4E02E516C8300C2D684 /* Raleway-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1E4F4DE2E516C8300C2D684 /* Raleway-VariableFont_wght.ttf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F1E4F4CA2E50F30400C2D684 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F1E4F4C92E50F30400C2D684 /* Python.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		F1E4F4AC2E50EE2800C2D684 /* Wakatime Playgrounds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Wakatime Playgrounds.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1E4F4BD2E50F28B00C2D684 /* Python.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Python.xcframework; sourceTree = "<group>"; };
+		F1E4F4BF2E50F29F00C2D684 /* dylib-Info-template.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "dylib-Info-template.plist"; sourceTree = "<group>"; };
+		F1E4F4D72E516C6600C2D684 /* GoogleSansCode-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSansCode-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		F1E4F4D82E516C6600C2D684 /* GoogleSansCode-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSansCode-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		F1E4F4DB2E516C7900C2D684 /* Outfit-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Outfit-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		F1E4F4DD2E516C8300C2D684 /* Raleway-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		F1E4F4DE2E516C8300C2D684 /* Raleway-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F1E4F4AE2E50EE2800C2D684 /* Wakatime Playgrounds */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Wakatime Playgrounds";
+			sourceTree = "<group>";
+		};
+		F1E4F4C12E50F2B400C2D684 /* Scripts */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Scripts;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +61,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1E4F4C72E50F2FA00C2D684 /* PythonKit in Frameworks */,
+				F1E4F4C82E50F30400C2D684 /* Python.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,6 +72,10 @@
 		F1E4F4A32E50EE2800C2D684 = {
 			isa = PBXGroup;
 			children = (
+				F1E4F4D62E516C6000C2D684 /* Fonts */,
+				F1E4F4BD2E50F28B00C2D684 /* Python.xcframework */,
+				F1E4F4BF2E50F29F00C2D684 /* dylib-Info-template.plist */,
+				F1E4F4C12E50F2B400C2D684 /* Scripts */,
 				F1E4F4AE2E50EE2800C2D684 /* Wakatime Playgrounds */,
 				F1E4F4AD2E50EE2800C2D684 /* Products */,
 			);
@@ -45,6 +89,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		F1E4F4D62E516C6000C2D684 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				F1E4F4D72E516C6600C2D684 /* GoogleSansCode-Italic-VariableFont_wght.ttf */,
+				F1E4F4D82E516C6600C2D684 /* GoogleSansCode-VariableFont_wght.ttf */,
+				F1E4F4DB2E516C7900C2D684 /* Outfit-VariableFont_wght.ttf */,
+				F1E4F4DD2E516C8300C2D684 /* Raleway-Italic-VariableFont_wght.ttf */,
+				F1E4F4DE2E516C8300C2D684 /* Raleway-VariableFont_wght.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -55,6 +111,9 @@
 				F1E4F4A82E50EE2800C2D684 /* Sources */,
 				F1E4F4A92E50EE2800C2D684 /* Frameworks */,
 				F1E4F4AA2E50EE2800C2D684 /* Resources */,
+				F1E4F4CB2E50F38700C2D684 /* Install Target Specific Standard Python Library */,
+				F1E4F4CC2E50F3B700C2D684 /* Prepare Python Binary Modules */,
+				F1E4F4CA2E50F30400C2D684 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -62,9 +121,11 @@
 			);
 			fileSystemSynchronizedGroups = (
 				F1E4F4AE2E50EE2800C2D684 /* Wakatime Playgrounds */,
+				F1E4F4C12E50F2B400C2D684 /* Scripts */,
 			);
 			name = "Wakatime Playgrounds";
 			packageProductDependencies = (
+				F1E4F4C62E50F2FA00C2D684 /* PythonKit */,
 			);
 			productName = "Wakatime Playgrounds";
 			productReference = F1E4F4AC2E50EE2800C2D684 /* Wakatime Playgrounds.app */;
@@ -94,6 +155,9 @@
 			);
 			mainGroup = F1E4F4A32E50EE2800C2D684;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F1E4F4C52E50F2FA00C2D684 /* XCRemoteSwiftPackageReference "PythonKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F1E4F4AD2E50EE2800C2D684 /* Products */;
 			projectDirPath = "";
@@ -109,10 +173,57 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1E4F4DF2E516C8300C2D684 /* Raleway-Italic-VariableFont_wght.ttf in Resources */,
+				F1E4F4E02E516C8300C2D684 /* Raleway-VariableFont_wght.ttf in Resources */,
+				F1E4F4D92E516C6E00C2D684 /* GoogleSansCode-VariableFont_wght.ttf in Resources */,
+				F1E4F4DA2E516C6E00C2D684 /* GoogleSansCode-Italic-VariableFont_wght.ttf in Resources */,
+				F1E4F4DC2E516C7900C2D684 /* Outfit-VariableFont_wght.ttf in Resources */,
+				F1E4F4C02E50F29F00C2D684 /* dylib-Info-template.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F1E4F4CB2E50F38700C2D684 /* Install Target Specific Standard Python Library */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Install Target Specific Standard Python Library";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nmkdir -p \"$CODESIGNING_FOLDER_PATH/python/lib\"\nif [ \"$EFFECTIVE_PLATFORM_NAME\" = \"-iphonesimulator\" ]; then\n    echo \"Installing Python modules for iOS Simulator\"\n    rsync -au --delete \"$PROJECT_DIR/Python.xcframework/ios-arm64_x86_64-simulator/lib/\" \"$CODESIGNING_FOLDER_PATH/python/lib/\"\nelse\n    echo \"Installing Python modules for iOS Device\"\n    rsync -au --delete \"$PROJECT_DIR/Python.xcframework/ios-arm64/lib/\" \"$CODESIGNING_FOLDER_PATH/python/lib/\"\nfi\n";
+		};
+		F1E4F4CC2E50F3B700C2D684 /* Prepare Python Binary Modules */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Prepare Python Binary Modules";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\ninstall_dylib () {\n    INSTALL_BASE=$1\n    FULL_EXT=$2\n\n    # The name of the extension file\n    EXT=$(basename \"$FULL_EXT\")\n    # The location of the extension file, relative to the bundle\n    RELATIVE_EXT=${FULL_EXT#$CODESIGNING_FOLDER_PATH/}\n    # The path to the extension file, relative to the install base\n    PYTHON_EXT=${RELATIVE_EXT/$INSTALL_BASE/}\n    # The full dotted name of the extension module, constructed from the file path.\n    FULL_MODULE_NAME=$(echo $PYTHON_EXT | cut -d \".\" -f 1 | tr \"/\" \".\");\n    # A bundle identifier; not actually used, but required by Xcode framework packaging\n    FRAMEWORK_BUNDLE_ID=$(echo $PRODUCT_BUNDLE_IDENTIFIER.$FULL_MODULE_NAME | tr \"_\" \"-\")\n    # The name of the framework folder.\n    FRAMEWORK_FOLDER=\"Frameworks/$FULL_MODULE_NAME.framework\"\n\n    # If the framework folder doesn't exist, create it.\n    if [ ! -d \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER\" ]; then\n        echo \"Creating framework for $RELATIVE_EXT\"\n        mkdir -p \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER\"\n        cp \"$CODESIGNING_FOLDER_PATH/dylib-Info-template.plist\" \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/Info.plist\"\n        plutil -replace CFBundleExecutable -string \"$FULL_MODULE_NAME\" \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/Info.plist\"\n        plutil -replace CFBundleIdentifier -string \"$FRAMEWORK_BUNDLE_ID\" \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/Info.plist\"\n    fi\n\n    echo \"Installing binary for $FRAMEWORK_FOLDER/$FULL_MODULE_NAME\"\n    mv \"$FULL_EXT\" \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/$FULL_MODULE_NAME\"\n    # Create a placeholder .fwork file where the .so was\n    echo \"$FRAMEWORK_FOLDER/$FULL_MODULE_NAME\" > ${FULL_EXT%.so}.fwork\n    # Create a back reference to the .so file location in the framework\n    echo \"${RELATIVE_EXT%.so}.fwork\" > \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/$FULL_MODULE_NAME.origin\"\n }\n\n PYTHON_VER=$(ls -1 \"$CODESIGNING_FOLDER_PATH/python/lib\")\n echo \"Install Python $PYTHON_VER standard library extension modules...\"\n find \"$CODESIGNING_FOLDER_PATH/python/lib/$PYTHON_VER/lib-dynload\" -name \"*.so\" | while read FULL_EXT; do\n    install_dylib python/lib/$PYTHON_VER/lib-dynload/ \"$FULL_EXT\"\n done\n\n # Clean up dylib template\n rm -f \"$CODESIGNING_FOLDER_PATH/dylib-Info-template.plist\"\n\n echo \"Signing frameworks as $EXPANDED_CODE_SIGN_IDENTITY_NAME ($EXPANDED_CODE_SIGN_IDENTITY)...\"\n find \"$CODESIGNING_FOLDER_PATH/Frameworks\" -name \"*.framework\" -exec /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" ${OTHER_CODE_SIGN_FLAGS:-} -o runtime --timestamp=none --preserve-metadata=identifier,entitlements,flags --generate-entitlement-der \"{}\" \\;\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F1E4F4A82E50EE2800C2D684 /* Sources */ = {
@@ -251,11 +362,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = MK2VQ82S9T;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/Python.framework/Headers";
+				INFOPLIST_FILE = "Wakatime-Playgrounds-Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -279,11 +396,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = MK2VQ82S9T;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/Python.framework/Headers";
+				INFOPLIST_FILE = "Wakatime-Playgrounds-Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -324,6 +448,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F1E4F4C52E50F2FA00C2D684 /* XCRemoteSwiftPackageReference "PythonKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pvieito/PythonKit";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F1E4F4C62E50F2FA00C2D684 /* PythonKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F1E4F4C52E50F2FA00C2D684 /* XCRemoteSwiftPackageReference "PythonKit" */;
+			productName = PythonKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F1E4F4A42E50EE2800C2D684 /* Project object */;
 }

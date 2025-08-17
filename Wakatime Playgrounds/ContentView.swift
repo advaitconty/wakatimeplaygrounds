@@ -6,14 +6,18 @@
 //
 
 import SwiftUI
+import PythonKit
 
 struct ContentView: View {
+    @State var textItem: String = ""
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("Welcome to Wakatime Playgrounds!")
+            Text(textItem)
+                .onAppear {
+                    let sys = Python.import("sys")
+                    textItem = "\(sys.version)"
+                }
         }
         .padding()
     }
