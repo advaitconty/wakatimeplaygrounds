@@ -13,6 +13,8 @@ import PythonKit
 struct Wakatime_PlaygroundsApp: App {
     init() {
         detectAndConfigurePythonHome()
+        _ = PythonEnvironment.shared
+
     }
     var body: some Scene {
         WindowGroup {

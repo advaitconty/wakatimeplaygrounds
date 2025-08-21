@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SetupView: View {
     @Binding var wakatimeSettings: String
-    @Environment(\.dismiss) var dismiss
+    @Binding var finishSetup: Bool
     var body: some View {
         VStack {
             Text("Welcome to Wakatime Playgrounds!")
@@ -25,18 +25,27 @@ struct SetupView: View {
             
             TextEditor(text: $wakatimeSettings)
                 .font(.custom("Google Sans Code", size: 16))
-                .textFieldStyle(.roundedBorder)
+                .frame(height: 400)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 10.0)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
             
             Button {
-               dismiss()
+                withAnimation {
+                    finishSetup = true
+                }
             } label: {
-                Text("Start working!")
+                Text("Start tracking!")
+                    .font(.custom("Raleway", size: 16))
             }
+            .buttonStyle(.borderedProminent)
         }
         .frame(width: 600)
     }
 }
 
 #Preview {
-    SetupView(wakatimeSettings: .constant("[settings]\napi_url = https://hackatime.hackclub.com/api/hackatime/v1\napi_key = <your-wakatime-api-key>\nheartbeat_rate_limit_seconds = 30"))
+    SetupView(wakatimeSettings: .constant("[settings]\napi_url = https://hackatime.hackclub.com/api/hackatime/v1\napi_key = <your-wakatime-api-key>\nheartbeat_rate_limit_seconds = 30"), finishSetup: .constant(false))
 }

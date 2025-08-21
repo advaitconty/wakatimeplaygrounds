@@ -9,17 +9,16 @@ import SwiftUI
 import PythonKit
 
 struct ContentView: View {
-    @State var textItem: String = ""
+    @AppStorage("wakatimeSetupData") var wakatimeSetupInformation: String = "[settings]\napi_url = https://hackatime.hackclub.com/api/hackatime/v1\napi_key = <your-wakatime-api-key>\nheartbeat_rate_limit_seconds = 30"
+    @AppStorage("setupFinished") var setupFinished: Bool = false
     var body: some View {
-        VStack {
-            Text("Welcome to Wakatime Playgrounds!")
-            Text(textItem)
-                .onAppear {
-                    let sys = Python.import("sys")
-                    textItem = "\(sys.version)"
-                }
+        if !setupFinished {
+            SetupView(wakatimeSettings: $wakatimeSetupInformation, finishSetup: $setupFinished)
+                .transition(.slide)
+        } else {
+            HomeView(wakatimeSettings: $wakatimeSetupInformation)
+                .transition(.opacity)
         }
-        .padding()
     }
 }
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F10062F42E5465610071ABC8 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = F10062F32E5465320071ABC8 /* Scripts */; };
+		F135AEC62E55B62600E83D3E /* CustomAlert in Frameworks */ = {isa = PBXBuildFile; productRef = F135AEC52E55B62600E83D3E /* CustomAlert */; };
 		F1E4F4C02E50F29F00C2D684 /* dylib-Info-template.plist in Resources */ = {isa = PBXBuildFile; fileRef = F1E4F4BF2E50F29F00C2D684 /* dylib-Info-template.plist */; };
 		F1E4F4C72E50F2FA00C2D684 /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = F1E4F4C62E50F2FA00C2D684 /* PythonKit */; };
 		F1E4F4C82E50F30400C2D684 /* Python.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1E4F4BD2E50F28B00C2D684 /* Python.xcframework */; };
@@ -33,6 +35,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F10062F32E5465320071ABC8 /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
 		F1E4F4AC2E50EE2800C2D684 /* Wakatime Playgrounds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Wakatime Playgrounds.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1E4F4BD2E50F28B00C2D684 /* Python.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Python.xcframework; sourceTree = "<group>"; };
 		F1E4F4BF2E50F29F00C2D684 /* dylib-Info-template.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "dylib-Info-template.plist"; sourceTree = "<group>"; };
@@ -49,11 +52,6 @@
 			path = "Wakatime Playgrounds";
 			sourceTree = "<group>";
 		};
-		F1E4F4C12E50F2B400C2D684 /* Scripts */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Scripts;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +60,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F1E4F4C72E50F2FA00C2D684 /* PythonKit in Frameworks */,
+				F135AEC62E55B62600E83D3E /* CustomAlert in Frameworks */,
 				F1E4F4C82E50F30400C2D684 /* Python.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,7 +74,7 @@
 				F1E4F4D62E516C6000C2D684 /* Fonts */,
 				F1E4F4BD2E50F28B00C2D684 /* Python.xcframework */,
 				F1E4F4BF2E50F29F00C2D684 /* dylib-Info-template.plist */,
-				F1E4F4C12E50F2B400C2D684 /* Scripts */,
+				F10062F32E5465320071ABC8 /* Scripts */,
 				F1E4F4AE2E50EE2800C2D684 /* Wakatime Playgrounds */,
 				F1E4F4AD2E50EE2800C2D684 /* Products */,
 			);
@@ -121,11 +120,11 @@
 			);
 			fileSystemSynchronizedGroups = (
 				F1E4F4AE2E50EE2800C2D684 /* Wakatime Playgrounds */,
-				F1E4F4C12E50F2B400C2D684 /* Scripts */,
 			);
 			name = "Wakatime Playgrounds";
 			packageProductDependencies = (
 				F1E4F4C62E50F2FA00C2D684 /* PythonKit */,
+				F135AEC52E55B62600E83D3E /* CustomAlert */,
 			);
 			productName = "Wakatime Playgrounds";
 			productReference = F1E4F4AC2E50EE2800C2D684 /* Wakatime Playgrounds.app */;
@@ -157,6 +156,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F1E4F4C52E50F2FA00C2D684 /* XCRemoteSwiftPackageReference "PythonKit" */,
+				F135AEC42E55B62600E83D3E /* XCRemoteSwiftPackageReference "CustomAlert" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F1E4F4AD2E50EE2800C2D684 /* Products */;
@@ -173,6 +173,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F10062F42E5465610071ABC8 /* Scripts in Resources */,
 				F1E4F4DF2E516C8300C2D684 /* Raleway-Italic-VariableFont_wght.ttf in Resources */,
 				F1E4F4E02E516C8300C2D684 /* Raleway-VariableFont_wght.ttf in Resources */,
 				F1E4F4D92E516C6E00C2D684 /* GoogleSansCode-VariableFont_wght.ttf in Resources */,
@@ -364,7 +365,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = MK2VQ82S9T;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -372,19 +373,28 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/Python.framework/Headers";
 				INFOPLIST_FILE = "Wakatime-Playgrounds-Info.plist";
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_CFBundleDisplayName = "Wakatime Playgrounds";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Required for keeping Wakatime Playgrounds running in the background";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Required for keeping Wakatime Playgrounds running in the background";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Required for keeping Wakatime Playgrounds running in the background";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.contyadvait.Wakatime-Playgrounds";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -398,7 +408,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = MK2VQ82S9T;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_TESTABILITY = YES;
@@ -407,19 +417,28 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/Python.framework/Headers";
 				INFOPLIST_FILE = "Wakatime-Playgrounds-Info.plist";
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_CFBundleDisplayName = "Wakatime Playgrounds";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Required for keeping Wakatime Playgrounds running in the background";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Required for keeping Wakatime Playgrounds running in the background";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Required for keeping Wakatime Playgrounds running in the background";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.contyadvait.Wakatime-Playgrounds";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -450,6 +469,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		F135AEC42E55B62600E83D3E /* XCRemoteSwiftPackageReference "CustomAlert" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/divadretlaw/CustomAlert.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.1.1;
+			};
+		};
 		F1E4F4C52E50F2FA00C2D684 /* XCRemoteSwiftPackageReference "PythonKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pvieito/PythonKit";
@@ -461,6 +488,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F135AEC52E55B62600E83D3E /* CustomAlert */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F135AEC42E55B62600E83D3E /* XCRemoteSwiftPackageReference "CustomAlert" */;
+			productName = CustomAlert;
+		};
 		F1E4F4C62E50F2FA00C2D684 /* PythonKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F1E4F4C52E50F2FA00C2D684 /* XCRemoteSwiftPackageReference "PythonKit" */;
