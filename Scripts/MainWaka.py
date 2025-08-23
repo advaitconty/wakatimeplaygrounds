@@ -1,173 +1,216 @@
-# main wakatime script
-
 import os
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
 import base64
 import json
 import sys
 import threading
 import time
 from io import StringIO
-import datetime
-import requests
+from urllib import request, error
 import platform
 
 _buffer = StringIO()
-_stop_flag = False
-_thread = None
 
 class StreamCatcher:
-    def write(self, text):
-        _buffer.write(text)
+    def write(self, text): _buffer.write(text)
+    def flush(self): pass
 
-    def flush(self):
-        pass
-
-sys_is_main = (__name__ == "__main__")
-if not sys_is_main:
+if __name__ != "__main__":
     sys.stdout = StreamCatcher()
 
-def build_ua(client="wakatime-playgrounds", version="0.1", runtime=None):
+def build_ua(client="wakatime-playgrounds", version="0.1"):
     runtime = f"python/{platform.python_version()}"
     os_ = f"{platform.system()}/{platform.release()}"
-    ua = f"{client}/{version} ({runtime}; {os_})"
-    return ua[:200]
+    return f"{client}/{version} ({runtime}; {os_})"[:200]
 
-class HeartbeatHandler(FileSystemEventHandler):
-    def __init__(self, tracker, directory, interval):
-        self.tracker = tracker
-        self.directory = directory
-        self.interval = interval
-        self.last_heartbeat_time = {}
-        self.last_entity = None
+LANG_MAP = {
+    "py":"python",
+    "js":"javascript",
+    "html":"html",
+    "css":"css",
+    "java":"java",
+    "cpp":"cpp",
+    "c":"c",
+    "go":"go",
+    "rb":"ruby",
+    "php":"php",
+    "swift":"swift",
+    "ts":"typescript",
+    "md":"markdown",
+    "swiftpm":"swift",
+    "sh":"bash",
+    "json":"json",
+    "yaml":"yaml",
+    "toml":"toml",
+    "ini":"ini",
+    "txt":"text",
+    "xml":"xml",
+    "csv":"csv",
+    "tsv":"tsv",
+    "log":"text",
+    "mdx":"markdown",
+}
 
-        self.language_map = {
-            "py": "python",
-            "js": "javascript",
-            "html": "html",
-            "css": "css",
-            "java": "java",
-            "cpp": "cpp",
-            "c": "c",
-            "go": "go",
-            "rb": "ruby",
-            "php": "php",
-            "swift": "swift",
-            "ts": "typescript",
-            "md": "markdown"
-        }
-    
-    def get_language(self, filename):
-        _, ext = os.path.splitext(filename)
-        print(ext)
-        return self.language_map.get(ext[1:].lower(), 'unknown')
-    
+def lang_for(path):
+    _, ext = os.path.splitext(path)
+    return LANG_MAP.get(ext[1:].lower(), "unknown")
 
-    def on_any_event(self, event):
-        if event.is_directory:
-            return
-        
-        now = time.time()
-
-        last_time = self.last_heartbeat_time.get(entity, 0)
-
-        if (now - last_time) > self.interval:
-            language = self.get_language(event.src_path)
-
-            data = {
-                "entity": event.src_path,
-                "type": "file",
-                "category": "coding",
-                "time": time.time(),
-                "is_write": event.event_type in ["modified", "created"],
-                "project": os.path.basename(self.directory),
-                "language": language,
-                "editor": "Wakatime Playgrounds",
-                "branch": "master",
-                "operating_system": platform.system(),
-                "machine": platform.node()
-            }
-            self.tracker.send_heartbeat(data)
-
-class Tracker():
+class Tracker:
     def __init__(self, debugMode, api_url, api_key, interval):
         self.debugMode = debugMode
         self.running = False
-        
         self.api_url = api_url
         self.api_key = api_key
-        self.interval = interval
+        self.interval = max(1, int(interval) if interval else 5)
 
         self._thread = None
         self._stop_flag = threading.Event()
 
-        self._session = requests.Session()
-        self._session.headers.update({"User-Agent": build_ua()})
+        enc = base64.b64encode(self.api_key.encode()).decode()
+        self._headers = {
+            "User-Agent": build_ua(),
+            "Authorization": f"Basic {enc}",
+            "Content-Type": "application/json",
+        }
 
-        encoded_key = base64.b64encode(self.api_key.encode()).decode()
-        self._session.headers.update({"Authorization": f"Basic {encoded_key}"})
+        if self.debugMode: print("DEBUG: Tracker initialised")
 
-        if self.debugMode:
-            print("DEBUG: Tracker initialised")
+    def _poll_once(self, directory, seen):
+        try:
+            current = {}
+            for root, dirs, files in os.walk(directory):
+                # skip hidden dirs (start with ".")
+                dirs[:] = [d for d in dirs if not d.startswith(".")]
+                for name in files:
+                    if name.startswith("."):
+                        continue
+                    p = os.path.join(root, name)
+                    try:
+                        mtime = os.path.getmtime(p)
+                        # store relative path from base dir
+                        rel = os.path.relpath(p, directory)
+                        current[rel] = mtime
+                    except PermissionError:
+                        if self.debugMode:
+                            print(f"DEBUG: Skipping (perm): {p}")
+                    except FileNotFoundError:
+                        continue
+        except PermissionError:
+            if self.debugMode:
+                print("DEBUG: No permission to list directory; will retry")
+            return seen
 
-    def worker(self):
-        pass
+        added = set(current.keys()) - set(seen.keys())
+        removed = set(seen.keys()) - set(current.keys())
+        modified = {
+            rel for rel, mtime in current.items()
+            if rel in seen and mtime > seen[rel]
+        }
 
-    def start(self, directory, interval):
+        now = time.time()
+        for rel in added:
+            path = os.path.join(directory, rel)
+            self._heartbeat(path, "created", now, directory)
+        for rel in removed:
+            path = os.path.join(directory, rel)
+            self._heartbeat(path, "deleted", now, directory)
+        for rel in modified:
+            path = os.path.join(directory, rel)
+            self._heartbeat(path, "modified", now, directory)
+
+        return current
+
+
+    def worker(self, directory, interval):
+        try:
+            seen = {}
+            try:
+                for root, dirs, files in os.walk(directory):
+                    dirs[:] = [d for d in dirs if not d.startswith(".")]
+                    for name in files:
+                        if not name.startswith("."):
+                            p = os.path.join(root, name)
+                            try:
+                                mtime = os.path.getmtime(p)
+                                rel = os.path.relpath(p, directory)
+                                seen[rel] = mtime
+                            except (PermissionError, FileNotFoundError):
+                                continue
+            except Exception as e:
+                if self.debugMode:
+                    print(f"DEBUG: initial walk failed: {e}")
+            while not self._stop_flag.is_set():
+                time.sleep(self.interval)
+                seen = self._poll_once(directory, seen)
+        finally:
+            if self.debugMode:
+                print("DEBUG: worker exit")
+
+    def start(self, directory, interval=None):
         if self._thread is None or not self._thread.is_alive():
             self._stop_flag.clear()
-            self._thread = threading.Thread(target=self.worker, daemon=True)
+            self._thread = threading.Thread(
+                target=self.worker, args=(directory, self.interval), daemon=True
+            )
             self._thread.start()
             self.running = True
-
-            self._event_handler = HeartbeatHandler(self, directory, interval)
-            self._observer = Observer()
-            self._observer.schedule(self._event_handler, directory, recursive=True)
-            self._observer.daemon = True
-            self._observer.start()
-
             if self.debugMode:
                 print("DEBUG: Tracker started")
-                print(f"Watching {directory} for changes")
+                print(f"Watching (polling) {directory}")
 
     def stop(self):
         self._stop_flag.set()
         self.running = False
+        if self._thread and self._thread.is_alive():
+            self._thread.join(timeout=2)
+        if self.debugMode: print("DEBUG: Tracker stopped")
 
-        if hasattr(self, "_observer"):
-            self._observer.stop()
-            self._observer.join()
-            if self.debugMode:
-                print("DEBUG: Observer stopped")
-
-        if self.debugMode:
-            print("DEBUG: Tracker stopped")
+    def _heartbeat(self, entity, evt, now, directory):
+        payload = {
+            "entity": entity,
+            "type": "file",
+            "category": "coding",
+            "time": now,
+            "is_write": evt in ("created", "modified"),
+            "project": os.path.basename(directory),
+            "language": lang_for(entity),
+            "editor": "Wakatime Playgrounds",
+            "branch": "main",
+            "operating_system": platform.system(),
+            "machine": platform.node(),
+            "event": evt,
+        }
+        self.send_heartbeat(payload)
 
     def send_heartbeat(self, data):
         endpoint = f"{self.api_url}/users/current/heartbeats"
-        payload = data
         if self.debugMode:
-            print(f"DEBUG: Sending heartbeat to {endpoint} with data: {json.dumps(payload)}")
-    
+            print(f"DEBUG: Sending heartbeat to {endpoint} with data: {json.dumps(data)}")
+        
+        req_data = json.dumps(data).encode('utf-8')
+        req = request.Request(endpoint, data=req_data, headers=self._headers, method='POST')
+
         try:
-            response = self._session.post(endpoint, json=payload, timeout=10)
-            response.raise_for_status()
-            if self.debugMode:
-                print("DEBUG: {} Response received!".format(response.status_code))
-                print(f"JSON: {response.json()}")
-
-            return response.json()
-
-        except requests.exceptions.RequestException as e:
-            if self.debugMode:
-                print(f"DEBUG: Error occurred: {e}")
-                print(response.json())
-            
+            with request.urlopen(req, timeout=10) as response:
+                if self.debugMode:
+                    print(f"DEBUG: {response.status} Response received!")
+                
+                content_type = response.headers.get('content-type', '')
+                if content_type.startswith("application/json"):
+                    body = response.read().decode('utf-8')
+                    return json.loads(body)
+                return {}
+        except error.HTTPError as e:
+            if self.debugMode: print(f"DEBUG: HTTP Error occurred: {e.code} {e.reason}")
+            return {"error": str(e)}
+        except error.URLError as e:
+            if self.debugMode: print(f"DEBUG: URL Error occurred: {e.reason}")
+            return {"error": str(e)}
+        except Exception as e:
+            if self.debugMode: print(f"DEBUG: An unexpected error occurred: {e}")
             return {"error": str(e)}
 
     @staticmethod
-    def get_logs():
+    def get_logs(): 
         return _buffer.getvalue()
 
 # i'm lazy for this, AI created this for tests

@@ -10,49 +10,124 @@ import PythonKit
 import CustomAlert
 
 struct HomeView: View {
-    @Binding var wakatimeSettings: String
-    @State var extractedAPIKey: String = ""
+    @Binding var api_url: String
+    @Binding var api_key: String
+    @Binding var heartbeat_rate_limit_seconds: String
     @State var log: String = ""
     @State var trackerInstance: PythonObject = PythonObject(stringLiteral: "init object")
     @State var isRunning: Bool = false
+    @State var showFolderPicker: Bool = false
+    @State var selectedFolderURL: URL? = nil
+    @State var showNoFolderSelectedError: Bool = false
     let Tracker = Python.import("MainWaka").Tracker
     let timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
     @State var showAlert: Bool = false
     @State var showLocationAccessNotGivenAlert: Bool = false
     @AppStorage("firstLaunch") var firstLaunch: Bool = true
     @StateObject var backgrounder: Backgrounder = Backgrounder()
+    @State var refresh: Bool = false
+    @State var openSettings: Bool = false
+    
+    func debugList(path: URL) {
+        let fileManager = FileManager.default
+        let didStart = path.startAccessingSecurityScopedResource()
+        print("startAccessing ->", didStart)
+        do {
+            let items = try fileManager.contentsOfDirectory(atPath: path.path)
+            print("Readable items:", items)
+        } catch {
+            print("Failed to list directory:", error)
+        }
+        if didStart { path.stopAccessingSecurityScopedResource() }
+    }
     
     var body: some View {
         Text("Welcome back to Wakatime Playgrounds!")
             .font(.custom("Outfit", size: 36))
-        Text("Your wakatime API key is: \(extractedAPIKey)")
-            .redacted(reason: .privacy)
-            .onAppear {
-                trackerInstance = Tracker(true)
-            }
         
-        Button {
-            if firstLaunch && !isRunning {
-                showAlert = true
-                firstLaunch = false
-            } else if backgrounder.checkPermissionsStatus() == "Full" {
-                if isRunning {
-                    trackerInstance.stop()
-                } else {
-                    trackerInstance.start()
+        if !refresh {
+            Text("Your wakatime API key is: \(api_key)")
+                .font(.custom("Raleway", size: 16))
+                .redacted(reason: .privacy)
+                .onAppear {
+                    trackerInstance = Tracker(true, api_url, api_key, Int(heartbeat_rate_limit_seconds))
                 }
-            } else if backgrounder.checkPermissionsStatus() == "Partial" {
-                trackerInstance.start()
-                backgrounder.startBackgroundLocation()
-                backgrounder.requestAlwaysPermissionsForBackgrounding()
+            if let selectedFolderURL {
+                Text("Folder selected: \(selectedFolderURL.lastPathComponent)")
+                    .font(.custom("Raleway", size: 16))
+                    .onAppear {
+                        debugList(path: selectedFolderURL)
+                    }
             } else {
-                showLocationAccessNotGivenAlert = true
+                Text("No folder selected. Select one to start tracking.")
+                    .font(.custom("Raleway", size: 16))
             }
-        } label: {
-            Text(isRunning ? "Stop" : "Start")
+        } else {
+            ProgressView()
+                .onAppear() {
+                    refresh = false
+                }
         }
-        .buttonStyle(.borderedProminent)
-        .hoverEffect()
+        HStack {
+            Button {
+                if selectedFolderURL!.startAccessingSecurityScopedResource() {
+                    if firstLaunch && !isRunning {
+                        showAlert = true
+                        firstLaunch = false
+                    } else if backgrounder.checkPermissionsStatus() == "Full" {
+                        if isRunning {
+                            trackerInstance.stop()
+                            backgrounder.stopBackgroundLocation()
+                            defer { selectedFolderURL!.stopAccessingSecurityScopedResource() }
+                        } else {
+                            trackerInstance.start(selectedFolderURL!.path, Int(heartbeat_rate_limit_seconds))
+                            backgrounder.startBackgroundLocation()
+                        }
+                    } else if backgrounder.checkPermissionsStatus() == "Partial" {
+                        if isRunning {
+                            trackerInstance.stop()
+                            backgrounder.stopBackgroundLocation()
+                            defer { selectedFolderURL!.stopAccessingSecurityScopedResource() }
+                        } else {
+                            trackerInstance.start(selectedFolderURL!.path, Int(heartbeat_rate_limit_seconds))
+                            backgrounder.startBackgroundLocation()
+                            backgrounder.requestAlwaysPermissionsForBackgrounding()
+                        }
+                    } else {
+                        showLocationAccessNotGivenAlert = true
+                    }
+                } else {
+                    if isRunning {
+                        trackerInstance.stop()
+                        backgrounder.stopBackgroundLocation()
+                    }
+                }
+            } label: {
+                Text(isRunning ? "Stop" : "Start")
+                    .font(.custom("Raleway", size: 16))
+            }
+            .buttonStyle(.borderedProminent)
+            .hoverEffect()
+            .disabled(selectedFolderURL == nil)
+            
+            Button {
+                showFolderPicker = true
+            } label: {
+                Text("Select folder")
+                    .font(.custom("Raleway", size: 16))
+            }
+            .buttonStyle(.borderedProminent)
+            .hoverEffect()
+            
+            Button {
+                openSettings = true
+            } label: {
+                Text("Settings")
+                    .font(.custom("Raleway", size: 16))
+            }
+            .buttonStyle(.borderedProminent)
+            .hoverEffect()
+        }
         
         VStack {
             ScrollView {
@@ -105,6 +180,12 @@ struct HomeView: View {
                 Text("Grant access in settings")
                     .font(.custom("Raleway", size: 16))
             }
+        }
+        .fullScreenCover(isPresented: $showFolderPicker) {
+            DocumentPicker(selectedURL: $selectedFolderURL)
+        }
+        .sheet(isPresented: $openSettings) {
+            SettingsView(api_url: $api_url, api_key: $api_key, heartbeat_rate_limit_seconds: $heartbeat_rate_limit_seconds)
         }
     }
 }

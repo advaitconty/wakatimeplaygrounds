@@ -1,32 +1,23 @@
 //
-//  SetupView.swift
+//  SettingsView.swift
 //  Wakatime Playgrounds
 //
-//  Created by Milind Contractor on 17/8/25.
+//  Created by Milind Contractor on 23/8/25.
 //
 
-import PythonKit
 import SwiftUI
 import Combine
 
-struct SetupView: View {
+struct SettingsView: View {
     @Binding var api_url: String
     @Binding var api_key: String
     @Binding var heartbeat_rate_limit_seconds: String
-    @Binding var finishSetup: Bool
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
-            Text("Welcome to Wakatime Playgrounds!")
+            Text("Wakatime Playgrounds Settings")
                 .font(.custom("Outfit", size: 36))
-            Text("Let's get you set up. Please start by entering you Wakatime server API key and server URL.")
-                .font(.custom("Raleway", size: 16))
-            HStack {
-                Text("~/.wakatime.cfg")
-                    .font(.custom("Google Sans Code", size: 16))
-                Spacer()
-            }
-            
             VStack {
                 HStack {
                     Text("[settings]")
@@ -65,6 +56,7 @@ struct SetupView: View {
                         .font(.custom("Google Sans Code", size: 16))
                         .textFieldStyle(.roundedBorder)
                 }
+                
             }
             .padding()
             .overlay(
@@ -73,19 +65,16 @@ struct SetupView: View {
             )
             
             Button {
-                withAnimation {
-                    finishSetup = true
-                }
+                dismiss()
             } label: {
-                Text("Start tracking!")
+                Text("Close")
                     .font(.custom("Raleway", size: 16))
             }
             .buttonStyle(.borderedProminent)
         }
-        .frame(width: 600)
     }
 }
 
 #Preview {
-    SetupView(api_url: .constant( "https://hackatime.hackclub.com/api/hackatime/v1"), api_key: .constant("<your-wakatime-api-key>"), heartbeat_rate_limit_seconds: .constant("30"), finishSetup: .constant(false))
+    SettingsView(api_url: .constant( "https://hackatime.hackclub.com/api/hackatime/v1"), api_key: .constant("<your-wakatime-api-key>"), heartbeat_rate_limit_seconds: .constant("30"))
 }
