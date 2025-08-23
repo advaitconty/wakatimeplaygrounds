@@ -40,18 +40,46 @@ class HeartbeatHandler(FileSystemEventHandler):
         self.directory = directory
         self.interval = interval
 
+        self.language_map = {
+            "py": "python",
+            "js": "javascript",
+            "html": "html",
+            "css": "css",
+            "java": "java",
+            "cpp": "cpp",
+            "c": "c",
+            "go": "go",
+            "rb": "ruby",
+            "php": "php",
+            "swift": "swift",
+            "ts": "typescript",
+            "md": "markdown"
+        }
+    
+    def get_language(self, filename):
+        _, ext = os.path.splitext(filename)
+        print(ext)
+        return self.language_map.get(ext[1:].lower(), 'unknown')
+    
+
     def on_any_event(self, event):
         if event.is_directory:
             return
+
+        language = self.get_language(event.src_path)
+
         data = {
             "entity": event.src_path,
             "type": "file",
             "category": "coding",
-            "timestamp": time.time(),
+            "time": time.time(),
             "is_write": event.event_type in ["modified", "created"],
             "project": os.path.basename(self.directory),
+            "language": language,
             "editor": "Wakatime Playgrounds",
-            "branch": "master"
+            "branch": "master",
+            "operating_system": platform.system(),
+            "machine": platform.node()
         }
         self.tracker.send_heartbeat(data)
 
