@@ -39,6 +39,8 @@ class HeartbeatHandler(FileSystemEventHandler):
         self.tracker = tracker
         self.directory = directory
         self.interval = interval
+        self.last_heartbeat_time = {}
+        self.last_entity = None
 
         self.language_map = {
             "py": "python",
@@ -65,23 +67,28 @@ class HeartbeatHandler(FileSystemEventHandler):
     def on_any_event(self, event):
         if event.is_directory:
             return
+        
+        now = time.time()
 
-        language = self.get_language(event.src_path)
+        last_time = self.last_heartbeat_time.get(entity, 0)
 
-        data = {
-            "entity": event.src_path,
-            "type": "file",
-            "category": "coding",
-            "time": time.time(),
-            "is_write": event.event_type in ["modified", "created"],
-            "project": os.path.basename(self.directory),
-            "language": language,
-            "editor": "Wakatime Playgrounds",
-            "branch": "master",
-            "operating_system": platform.system(),
-            "machine": platform.node()
-        }
-        self.tracker.send_heartbeat(data)
+        if (now - last_time) > self.interval:
+            language = self.get_language(event.src_path)
+
+            data = {
+                "entity": event.src_path,
+                "type": "file",
+                "category": "coding",
+                "time": time.time(),
+                "is_write": event.event_type in ["modified", "created"],
+                "project": os.path.basename(self.directory),
+                "language": language,
+                "editor": "Wakatime Playgrounds",
+                "branch": "master",
+                "operating_system": platform.system(),
+                "machine": platform.node()
+            }
+            self.tracker.send_heartbeat(data)
 
 class Tracker():
     def __init__(self, debugMode, api_url, api_key, interval):
