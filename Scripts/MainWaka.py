@@ -219,7 +219,7 @@ class Tracker:
 # i'm lazy for this, AI created this for tests
 if __name__ == "__main__":
     api_url = "https://hackatime.hackclub.com/api/hackatime/v1"
-    api_key = "7a73025b-4cc5-4a65-b823-ec4c49d085f0"
+    api_key = "oops"
     interval = 30
     debug = True
 
