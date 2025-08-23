@@ -4,6 +4,7 @@ import json
 import sys
 import threading
 import time
+import ssl
 from io import StringIO
 from urllib import request, error
 import platform
@@ -190,7 +191,9 @@ class Tracker:
         req = request.Request(endpoint, data=req_data, headers=self._headers, method='POST')
 
         try:
-            with request.urlopen(req, timeout=10) as response:
+            # Create an SSL context that does not verify certificates
+            ssl_context = ssl._create_unverified_context()
+            with request.urlopen(req, timeout=10, context=ssl_context) as response:
                 if self.debugMode:
                     print(f"DEBUG: {response.status} Response received!")
                 
