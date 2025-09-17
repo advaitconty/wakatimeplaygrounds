@@ -11,57 +11,67 @@ import platform
 
 _buffer = StringIO()
 
+
+
 class StreamCatcher:
     def write(self, text): _buffer.write(text)
     def flush(self): pass
 
+
 if __name__ != "__main__":
     sys.stdout = StreamCatcher()
+
 
 def build_ua(client="wakatime-playgrounds", version="0.1"):
     runtime = f"python/{platform.python_version()}"
     os_ = f"{platform.system()}/{platform.release()}"
     return f"{client}/{version} ({runtime}; {os_})"[:200]
 
+
 LANG_MAP = {
-    "py":"python",
-    "js":"javascript",
-    "html":"html",
-    "css":"css",
-    "java":"java",
-    "cpp":"cpp",
-    "c":"c",
-    "go":"go",
-    "rb":"ruby",
-    "php":"php",
-    "swift":"swift",
-    "ts":"typescript",
-    "md":"markdown",
-    "swiftpm":"swift",
-    "sh":"bash",
-    "json":"json",
-    "yaml":"yaml",
-    "toml":"toml",
-    "ini":"ini",
-    "txt":"text",
-    "xml":"xml",
-    "csv":"csv",
-    "tsv":"tsv",
-    "log":"text",
-    "mdx":"markdown",
+    "py": "python",
+    "js": "javascript",
+    "html": "html",
+    "css": "css",
+    "java": "java",
+    "cpp": "cpp",
+    "c": "c",
+    "go": "go",
+    "rb": "ruby",
+    "php": "php",
+    "swift": "swift",
+    "ts": "typescript",
+    "md": "markdown",
+    "swiftpm": "swift",
+    "sh": "bash",
+    "json": "json",
+    "yaml": "yaml",
+    "toml": "toml",
+    "ini": "ini",
+    "txt": "text",
+    "xml": "xml",
+    "csv": "csv",
+    "tsv": "tsv",
+    "log": "text",
+    "mdx": "markdown",
 }
+
 
 def lang_for(path):
     _, ext = os.path.splitext(path)
     return LANG_MAP.get(ext[1:].lower(), "unknown")
 
+
 class Tracker:
-    def __init__(self, debugMode, api_url, api_key, interval):
+    def __init__(self, debugMode, api_url, api_key, interval, sendLater=[]):
         self.debugMode = debugMode
         self.running = False
         self.api_url = api_url
         self.api_key = api_key
         self.interval = max(1, int(interval) if interval else 5)
+
+        self.failing = False  # flag to see if heartbeats are failing
+        self.sendLater = sendLater
 
         self._thread = None
         self._stop_flag = threading.Event()
@@ -74,6 +84,10 @@ class Tracker:
         }
 
         if self.debugMode: print("DEBUG: Tracker initialised")
+        
+    def get_sendLater(self):
+        return json.dumps(self.sendLater)
+
 
     def _poll_once(self, directory, seen):
         try:
@@ -120,7 +134,6 @@ class Tracker:
 
         return current
 
-
     def worker(self, directory, interval):
         try:
             seen = {}
@@ -150,7 +163,8 @@ class Tracker:
         if self._thread is None or not self._thread.is_alive():
             self._stop_flag.clear()
             self._thread = threading.Thread(
-                target=self.worker, args=(directory, self.interval), daemon=True
+                target=self.worker, args=(
+                    directory, self.interval), daemon=True
             )
             self._thread.start()
             self.running = True
@@ -165,7 +179,7 @@ class Tracker:
             self._thread.join(timeout=2)
         if self.debugMode: print("DEBUG: Tracker stopped")
 
-    def _heartbeat(self, entity, evt, now, directory):
+    def _heartbeat(self, entity, evt, now, directory, bulk=False):
         payload = {
             "entity": entity,
             "type": "file",
@@ -180,37 +194,94 @@ class Tracker:
             "machine": platform.node(),
             "event": evt,
         }
-        self.send_heartbeat(payload)
+        self.send_heartbeat(payload, bulk)
 
-    def send_heartbeat(self, data):
-        endpoint = f"{self.api_url}/users/current/heartbeats"
-        if self.debugMode:
-            print(f"DEBUG: Sending heartbeat to {endpoint} with data: {json.dumps(data)}")
-        
-        req_data = json.dumps(data).encode('utf-8')
-        req = request.Request(endpoint, data=req_data, headers=self._headers, method='POST')
+    def send_heartbeat(self, data, bulk):
+        if not bulk:
+            endpoint = f"{self.api_url}/users/current/heartbeats"
+            if self.debugMode:
+                print(
+                    f"DEBUG: Sending heartbeat to {endpoint} with data: {json.dumps(data)}")
 
-        try:
-            # Create an SSL context that does not verify certificates
-            ssl_context = ssl._create_unverified_context()
-            with request.urlopen(req, timeout=10, context=ssl_context) as response:
-                if self.debugMode:
-                    print(f"DEBUG: {response.status} Response received!")
-                
-                content_type = response.headers.get('content-type', '')
-                if content_type.startswith("application/json"):
-                    body = response.read().decode('utf-8')
-                    return json.loads(body)
-                return {}
-        except error.HTTPError as e:
-            if self.debugMode: print(f"DEBUG: HTTP Error occurred: {e.code} {e.reason}")
-            return {"error": str(e)}
-        except error.URLError as e:
-            if self.debugMode: print(f"DEBUG: URL Error occurred: {e.reason}")
-            return {"error": str(e)}
-        except Exception as e:
-            if self.debugMode: print(f"DEBUG: An unexpected error occurred: {e}")
-            return {"error": str(e)}
+            req_data = json.dumps(data).encode('utf-8')
+            req = request.Request(endpoint, data=req_data,
+                                  headers=self._headers, method='POST')
+
+            try:
+                # Create an SSL context that does not verify certificates
+                ssl_context = ssl._create_unverified_context()
+                with request.urlopen(req, timeout=10, context=ssl_context) as response:
+                    if self.debugMode:
+                        print(f"DEBUG: {response.status} Response received!")
+
+                    content_type = response.headers.get('content-type', '')
+                    if content_type.startswith("application/json"):
+                        body = response.read().decode('utf-8')
+                        if self.failing == True:
+                            if self.debugMode: print(
+                                 "Heartbeats are working again! Sending pending heartbeats")
+                            if self.send_heartbeat(self.sendLater, True) == True:
+                                if self.debugMode: print("SendLater heartbeats sent successfully!")
+                            else:
+                                if self.debugMode: print("Heartbeats failing again, data will be kept for later.")
+                        return json.loads(body)
+                    return {}
+            except error.HTTPError as e:
+                if self.debugMode: print(f"DEBUG: HTTP Error occurred: {e.code} {e.reason}")
+                self.failing = True
+                if e.code == 403 or e.code == 404 or e.code == 401:
+                    if self.debugMode: print("Not saving due to error code {}".format(e.code))
+                else:
+                    if self.debugMode: print("Heartbeats failing, will retry later")
+                err_msg = str(e)
+            except error.URLError as e:
+                if self.debugMode: print(f"DEBUG: URL Error occurred: {e.reason}")
+                self.failing = True
+                err_msg = str(e)
+            except Exception as e:
+                if self.debugMode: print(f"DEBUG: An unexpected error occurred: {e}")
+                self.failing = True
+                err_msg = str(e)
+            
+            self.sendLater.append(data)
+
+            return {"error": str(err_msg)}
+        else:
+            endpoint = f"{self.api_url}/users/current/heartbeats.bulk"
+            if self.debugMode:
+                print(f"DEBUG: Sending bulk heartbeats to {endpoint} with data: {json.dumps(data)}")
+            
+            req_data = json.dumps(data).encode('utf-8')
+            req = request.Request(endpoint, data=req_data, headers=self._headers, method='POST')
+
+            try:
+                # Create an SSL context that does not verify certificates
+                ssl_context = ssl._create_unverified_context()
+                with request.urlopen(req, timeout=10, context=ssl_context) as response:
+                    if self.debugMode:
+                        print(f"DEBUG: {response.status} Response received!")
+                    
+                    if response.status == 201:
+                        self.sendLater.clear()
+                        return True
+                    else:
+                        return False
+            except error.HTTPError as e:
+                if self.debugMode: print(f"DEBUG: HTTP Error occurred: {e.code} {e.reason}")
+                self.failing = True
+                if e.code == 403 or e.code == 404 or e.code == 401:
+                    if self.debugMode: print("Not saving due to error code {}".format(e.code))
+                else:
+                    if self.debugMode: print("Heartbeats failing, will retry later")
+            except error.URLError as e:
+                if self.debugMode: print(f"DEBUG: URL Error occurred: {e.reason}")
+                self.failing = True
+            except Exception as e:
+                if self.debugMode: print(f"DEBUG: An unexpected error occurred: {e}")
+                self.failing = True
+            
+            return False
+
 
     @staticmethod
     def get_logs(): 

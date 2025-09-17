@@ -8,6 +8,7 @@
 import SwiftUI
 import PythonKit
 import CustomAlert
+import Forever
 
 struct HomeView: View {
     @Binding var api_url: String
@@ -27,6 +28,7 @@ struct HomeView: View {
     @StateObject var backgrounder: Backgrounder = Backgrounder()
     @State var refresh: Bool = false
     @State var openSettings: Bool = false
+    @Forever("sendLaterHeartbeats") var sendLaterHeartbeats: [String] = []
     
     func debugList(path: URL) {
         let fileManager = FileManager.default
@@ -50,7 +52,12 @@ struct HomeView: View {
                 .font(.custom("Raleway", size: 16))
                 .redacted(reason: .privacy)
                 .onAppear {
-                    trackerInstance = Tracker(true, api_url, api_key, Int(heartbeat_rate_limit_seconds))
+                    trackerInstance = Tracker(true, api_url, api_key, Int(heartbeat_rate_limit_seconds), sendLaterHeartbeats)
+                    
+                    /// NOTE TO SELF. WORK ON THE PERSISTENCE OF SENDLATER CONTENT
+//                    if let pyList = trackerInstance.sendLater {
+//                        sendLaterHeartbeats = Array(pyList).compactMap { String($0) }
+//                    }
                 }
             if let selectedFolderURL {
                 Text("Folder selected: \(selectedFolderURL.lastPathComponent)")
@@ -136,6 +143,10 @@ struct HomeView: View {
                     .onReceive(timer) { _ in
                         self.log = trackerInstance.get_logs().description
                         self.isRunning =  Bool(trackerInstance.running)!
+                        
+                        /// NOTE TO SELF. WORK ON THE PERSISTENCE OF SENDLATER CONTENT
+//                        let pyList: PythonObject = trackerInstance.get_sendLater()
+//                        sendLaterHeartbeats = Array(pyList)?.compactMap { String($0) }
                     }
                     .foregroundStyle(.white)
                     .padding()
